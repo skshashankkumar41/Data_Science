@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 
-train=pd.read_csv('train.csv')
-test=pd.read_csv('test.csv')
+train=pd.read_csv('dataset/train.csv')
+test=pd.read_csv('dataset/test.csv')
 
 new_data=train.append(test)
 
@@ -13,7 +13,7 @@ new_data=train.append(test)
 
 new_data.drop(['PassengerId','Ticket'],axis=1,inplace=True)
 
-#Preprocessing Embarked 
+#Preprocessing Embarked
 new_data.Embarked.fillna(value='S',inplace=True)
 
 #Preprocessing Name and Age Accordingly
@@ -23,11 +23,11 @@ for i in new_data['Name']:
     k=i.split(',')
     m=k[1].split('.')
     new.append(m[0].strip())
-    
+
 new_data.iloc[:,4]=new
 
 new_data.Name[new_data.Name=='Dona']='Mrs'
-        
+
 fig = plt.figure(figsize=(15,6))
 i=1
 for title in new_data['Name'].unique():
@@ -35,7 +35,7 @@ for title in new_data['Name'].unique():
     plt.title('Title : {}'.format(title))
     new_data.Survived[new_data['Name'] == title].value_counts().plot(kind='pie')
     i += 1
-    
+
 replacement = {
     'Don': 0,
     'Rev': 0,
@@ -63,10 +63,10 @@ median_age=dict()
 for i in new:
     median=new_data.Age[(new_data['Age']!=-1) & (new_data['Name']==i)].median()
     median_age[i]=median
-    
+
 for i in range(1309):
     if new_data.iloc[i,0]==-1:
-        new_data.iloc[i,0]=median_age[new_data.iloc[i,4]]        
+        new_data.iloc[i,0]=median_age[new_data.iloc[i,4]]
 
 
 new_data.Age=StandardScaler().fit_transform(new_data.Age.values.reshape(-1,1))
@@ -82,15 +82,15 @@ median_dict={}
 for i in new_data.Pclass.unique():
     median=new_data.Fare[(new_data.Fare!=-1) & (new_data.Pclass==i)].median()
     median_dict[i]=median
-    
+
 for i in range(1309):
     if new_data.iloc[i,4]==-1:
         new_data.iloc[i,4]=median_dict[new_data.iloc[i,6]]
-        
+
 new_data.Fare=StandardScaler().fit_transform(new_data.Fare.values.reshape(-1,1))
-        
+
 #Normalizing Pclass
-        
+
 new_data['Pclass'] = StandardScaler().fit_transform(new_data['Pclass'].values.reshape(-1, 1))
 
 #Preprocessing Parch
@@ -103,7 +103,7 @@ for parch in new_data['Parch'].unique():
     plt.title('Parents / Child : {}'.format(parch))
     new_data.Survived[new_data['Parch'] == parch].value_counts().plot(kind='pie')
     i += 1
-    
+
 replacement = {
     6: 0,
     4: 0,
@@ -115,7 +115,7 @@ replacement = {
 }
 new_data['Parch'] = new_data['Parch'].apply(lambda x: replacement.get(x))
 new_data['Parch'] = StandardScaler().fit_transform(new_data['Parch'].values.reshape(-1, 1))
-    
+
 #Preprocessing Embarked
 
 replacement = {
@@ -156,7 +156,7 @@ new_data.Cabin.fillna(value='U',inplace=True)
 
 new_data.Cabin.unique()
 
-#Subsetting only First Character of Cabin 
+#Subsetting only First Character of Cabin
 new_data.Cabin=new_data.Cabin.apply(lambda x:x[0])
 
 #Plotting Cabin with Survived to see any Correlation
@@ -167,7 +167,7 @@ for cabin in new_data['Cabin'].unique():
     plt.title('Cabin : {}'.format(cabin))
     new_data.Survived[new_data['Cabin'] == cabin].value_counts().plot(kind='pie')
     i += 1
-    
+
 
 replacement  = {
     'T': 0,
@@ -199,7 +199,7 @@ X_train=X[:891,:]
 X_test=X[891:,:]
 y_train=y[:891,:]
 
-#Tuning for Random Forest 
+#Tuning for Random Forest
 from sklearn.grid_search import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 param_grid = {

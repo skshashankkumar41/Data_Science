@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-df=pd.read_csv('Default_On_Payment.csv')
+df=pd.read_csv('dataset/Default_On_Payment.csv')
 Columns_Name=list(df.columns)
 
 #Meta Data of DataFrame
